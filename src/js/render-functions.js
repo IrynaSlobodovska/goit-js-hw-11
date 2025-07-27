@@ -2,34 +2,26 @@ import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const galleryContainer = document.querySelector('.gallery');
-let lightbox = new SimpleLightbox('.gallery a', {
-  captionsData: 'alt',
-  captionDelay: 250,
-});
+const loader = document.querySelector('.loader');
+
+let lightbox = new SimpleLightbox('.gallery a');
 
 export function createGallery(images) {
   const markup = images
     .map(
-      ({
-        webformatURL,
-        largeImageURL,
-        tags,
-        likes,
-        views,
-        comments,
-        downloads,
-      }) => `
+      img => `
     <li class="gallery-item">
-      <a href="${largeImageURL}">
-        <img src="${webformatURL}" alt="${tags}" />
+      <a href="${img.largeImageURL}">
+        <img src="${img.webformatURL}" alt="${img.tags}" />
       </a>
-      <div class="info">
-        <p><b>Likes:</b> ${likes}</p>
-        <p><b>Views:</b> ${views}</p>
-        <p><b>Comments:</b> ${comments}</p>
-        <p><b>Downloads:</b> ${downloads}</p>
-      </div>
-    </li>`
+      <ul class="image-info">
+        <li>👍 ${img.likes}</li>
+        <li>👁️ ${img.views}</li>
+        <li>💬 ${img.comments}</li>
+        <li>⬇️ ${img.downloads}</li>
+      </ul>
+    </li>
+  `
     )
     .join('');
 
@@ -42,9 +34,9 @@ export function clearGallery() {
 }
 
 export function showLoader() {
-  document.querySelector('.loader').classList.remove('hidden');
+  loader.classList.add('visible');
 }
 
 export function hideLoader() {
-  document.querySelector('.loader').classList.add('hidden');
+  loader.classList.remove('visible');
 }

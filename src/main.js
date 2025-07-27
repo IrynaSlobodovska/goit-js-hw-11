@@ -1,3 +1,4 @@
+import './css/styles.css';
 import { getImagesByQuery } from './js/pixabay-api';
 import {
   createGallery,
@@ -5,21 +6,18 @@ import {
   showLoader,
   hideLoader,
 } from './js/render-functions';
-
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 
 const form = document.querySelector('.form');
+const input = document.querySelector('input[name="search-text"]');
 
 form.addEventListener('submit', async e => {
   e.preventDefault();
-  const query = e.target.elements['search-text'].value.trim();
 
+  const query = input.value.trim();
   if (!query) {
-    iziToast.warning({
-      message: 'Please enter a search query!',
-      position: 'topRight',
-    });
+    iziToast.warning({ message: 'Please enter a search query.' });
     return;
   }
 
@@ -28,20 +26,19 @@ form.addEventListener('submit', async e => {
 
   try {
     const data = await getImagesByQuery(query);
+    const { hits } = data;
 
-    if (data.hits.length === 0) {
-      iziToast.error({
+    if (hits.length === 0) {
+      iziToast.info({
         message:
           'Sorry, there are no images matching your search query. Please try again!',
-        position: 'topRight',
       });
     } else {
-      createGallery(data.hits);
+      createGallery(hits);
     }
   } catch (error) {
     iziToast.error({
-      message: `Something went wrong: ${error.message}`,
-      position: 'topRight',
+      message: 'Something went wrong. Please try again later.',
     });
   } finally {
     hideLoader();
